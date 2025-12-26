@@ -1,0 +1,90 @@
+<div class="page">
+  <header class="hero">
+    <p class="eyebrow">🎄 Ünnepi üzenet</p>
+    <h1>{{ heroTitle }}</h1>
+    <p class="subtitle">{{ heroSubtitle }}</p>
+  </header>
+
+  <section class="quiz-card" aria-live="polite">
+    <div class="progress" role="progressbar" [attr.aria-valuenow]="progressValue" aria-valuemin="0" aria-valuemax="100">
+      <div class="progress__value" [style.width.%]="progressValue"></div>
+    </div>
+
+    <div class="question-head">
+      <p class="step">{{ currentIndex + 1 }} / {{ totalQuestions }}</p>
+      <h2>{{ currentQuestion.question }}</h2>
+      <p class="attempts">Hátralévő hibák: {{ 3 - incorrectAttempts }} / 3</p>
+      <p class="hint" *ngIf="currentQuestion.hint">💡 {{ currentQuestion.hint }}</p>
+    </div>
+
+    <div class="answer-field">
+      <label class="sr-only" for="answer-input">Válasz</label>
+      <input
+        *ngIf="currentQuestion.type === 'date'; else textInput"
+        id="answer-input"
+        type="date"
+        [(ngModel)]="userAnswer"
+        [disabled]="giftUnlocked"
+        (keydown.enter)="submitAnswer()"
+      />
+      <ng-template #textInput>
+        <div class="choices">
+          <button
+            type="button"
+            class="choice"
+            *ngFor="let opt of currentChoices"
+            (click)="selectChoice(opt)"
+            [disabled]="giftUnlocked"
+            [class.selected]="opt === selectedChoice"
+          >
+              <ng-container *ngIf="isImage(opt); else textOpt">
+              <img [src]="'/assets/memes/' + opt" alt="{{ opt }}" />
+            </ng-container>
+            <ng-template #textOpt>{{ opt }}</ng-template>
+          </button>
+        </div>
+      </ng-template>
+    </div>
+
+    <div class="actions">
+      <button
+        class="primary"
+        type="button"
+        (click)="submitAnswer()"
+        [disabled]="giftUnlocked || (currentQuestion.type !== 'date' ? !selectedChoice : !userAnswer)"
+      >
+        Válasz elküldése
+      </button>
+      <button class="ghost" type="button" (click)="restartQuiz()">Újrakezdés</button>
+    </div>
+
+    <p class="feedback feedback--ok" *ngIf="feedback === 'correct' && !giftUnlocked">Tökéletes! Mehetünk tovább.</p>
+    <p class="feedback feedback--error" *ngIf="feedback === 'incorrect'">Hmm, ez most nem stimmel. Gondold át újra!</p>
+    <p class="feedback feedback--info" *ngIf="feedback === 'missing'">Előbb írj be egy választ, hogy értékelhessük.</p>
+
+    <button class="secondary" type="button" *ngIf="showNextButton" (click)="goToNextQuestion()">
+      Következő kérdés ➜
+    </button>
+  </section>
+
+  <section class="gift-card" *ngIf="giftUnlocked">
+    <h3>🎁 Megérdemelt ajándék</h3>
+    <p>Mind a {{ totalQuestions }} kérdés megvan! Már csak egy kattintás.</p>
+    <button class="primary" type="button" (click)="openGift()" [disabled]="giftOpened">
+      {{ giftOpened ? 'Az ajándék már fel van tárva' : 'Ajándék felnyitása' }}
+    </button>
+
+    <div class="gift-content" *ngIf="giftOpened">
+      <p>Fogadd szeretettel a titkos üzenetet:</p>
+      <p>Kedves Barátom! Nagyon szépen köszönöm a millió nevetést, sírást és minden együtt töltött percet. Őszintén boldog vagyok, hogy megtaláltam azt a barátomat, aki mellett teljesen önmagam lehetek és nem kell mást mutatnom. Tényleg hálás vagyok azért, hogy felvettél a céghez és ilyen jó barátom lettél. Tudd, hogy mindig számíthatsz rám történjen bármi. És végezetül csak annyit mondanék: EZ VAN BÁTTYA. 🎅</p>
+        <div style="margin-top:12px; display:flex; gap:10px; align-items:center;">
+          <button class="primary" type="button" (click)="sendTestEmail()" [disabled]="isSending">
+            <span *ngIf="!isSending">Ajándék e-mailben kiküldés</span>
+            <span *ngIf="isSending" class="loading">
+              <span class="spinner" aria-hidden></span> Küldés...
+            </span>
+          </button>
+        </div>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,11 @@
+{
+  "name": "christmas-email-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "nodemailer": "^6.9.4",
+    "pdfkit": "^0.13.0"
+  }
+}
