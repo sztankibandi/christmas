@@ -252,7 +252,7 @@ export class AppComponent implements OnInit {
     this.isSending = true;
     try {
       const attachments = ['gift1.pdf', 'gift2.pdf'];
-      const to = 'sztankibandi@gmail.com';
+      const to = 'patrikhegedus3@gmail.com';
       const subject = 'Boldog karácsonyt!';
       const text = 'Boldog Karácsonyt kedves barátom — neked is és Bálintnak is!';
       const html = `<p>Boldog Karácsonyt kedves barátom — neked is és Bálintnak is!</p>`;
